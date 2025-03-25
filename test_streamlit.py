@@ -120,7 +120,7 @@ def get_similar_business_info_gpt(gu_name, dong_name, business_type):
             {"role": "system", "content": "너는 지역 상권 분석 전문가야."},
             {"role": "user", "content": prompt}
         ]
-        response = openai.ChatCompletion.create(model="gpt-4", messages=messages)
+        response = openai.ChatCompletion.create(model="gpt-4-turbo", messages=messages)
         answer = response.choices[0].message["content"]
         number_match = re.search(r'\d+', answer.replace(',', ''))
         count = int(number_match.group()) if number_match else 0
@@ -141,7 +141,7 @@ def get_gpt_business_recommendation(gu, dong, population, estate_data):
             {"role": "system", "content": "너는 창업 전략가야."},
             {"role": "user", "content": prompt}
         ]
-        response = openai.ChatCompletion.create(model="gpt-4", messages=messages)
+        response = openai.ChatCompletion.create(model="gpt-4-turbo", messages=messages)
         return response.choices[0].message["content"]
     except Exception as e:
         st.error(f"GPT 업종 추천 오류: {e}")
@@ -264,7 +264,7 @@ def get_huff_analysis_with_gpt(gu_name, dong_name, item_name, population, estate
 """
         messages = [{"role": "system", "content": "너는 HUFF 모델 기반 상권 분석 전문가야."},
                     {"role": "user", "content": prompt}]
-        response = openai.ChatCompletion.create(model="gpt-4", messages=messages)
+        response = openai.ChatCompletion.create(model="gpt-4-turbo", messages=messages)
         return response.choices[0].message["content"]
     except Exception as e:
         return f"HUFF 모델 분석 실패: {e}"
@@ -352,7 +352,7 @@ if user_input:
         st.session_state.chat_history.append({"role": "user", "content": user_input})
 
     try:
-        res = openai.ChatCompletion.create(model="gpt-4", messages=st.session_state.chat_history)
+        res = openai.ChatCompletion.create(model="gpt-4-turbo", messages=st.session_state.chat_history)
         reply = res.choices[0].message["content"]
         st.session_state.chat_history.append({"role": "assistant", "content": reply})
         st.markdown(f"🤖 **GPT:**\n\n{reply}")
