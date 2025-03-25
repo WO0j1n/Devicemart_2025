@@ -13,6 +13,7 @@ from streamlit_folium import st_folium
 import urllib.parse
 
 matplotlib.rc('font', family='AppleGothic')  # 한글 폰트 설정
+matplotlib.rc('font', family='NanumGothic')  # 한글 폰트 설정
 
 # ==== 세션 초기화 ====
 if "analyzed" not in st.session_state:
