@@ -194,7 +194,7 @@ def plot_real_estate_trend(data):
     ax.plot(df['날짜'], df['가격'], marker='o')
     ax.set_title('부동산 거래 가격 추세', fontproperties=font_prop)
     ax.set_xlabel('날짜', fontproperties=font_prop)
-    ax.set_ylabel('가격(만원), fontproperties=font_prop')
+    ax.set_ylabel('가격(만원)', fontproperties=font_prop)
     st.pyplot(fig)
 
 
