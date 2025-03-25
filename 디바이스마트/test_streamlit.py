@@ -24,10 +24,10 @@ if "chat_history" not in st.session_state:
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 # ==== JSON 데이터 불러오기 ====
-with open("부동산.json", "r", encoding="utf-8") as f:
+with open("real_estate.json", "r", encoding="utf-8") as f:
     gu_code_map = json.load(f)
 
-with open("서울시 읍면동마스터 정보.json", "r", encoding="utf-8") as f:
+with open("address_master.json", "r", encoding="utf-8") as f:
     address_data = json.load(f)
 
 # ==== 부동산 & 유동인구 API ====
