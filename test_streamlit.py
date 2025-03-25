@@ -5,19 +5,16 @@ from datetime import datetime
 import streamlit as st
 import openai
 import matplotlib.pyplot as plt
-import matplotlib
 import re
 import pandas as pd
 import folium
 from streamlit_folium import st_folium
 import urllib.parse
-import matplotlib.font_manager as fm
-import matplotlib
+import streamlit as st
 
-# ✅ 나눔고딕 폰트 경로 직접 검색 후 적용
-font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"  # Streamlit Cloud 기준
-font_prop = fm.FontProperties(fname=font_path)
-matplotlib.rcParams['font.family'] = font_prop.get_name()
+# ✅ CSS 외부 파일 로딩
+with open("style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # matplotlib.rcParams['font.family'] = 'NanumGothic'  # 추천
 
