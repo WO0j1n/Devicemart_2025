@@ -169,9 +169,9 @@ def plot_population_by_hour(data):
     values = [data.get(f"PSNG_NO_{str(h).zfill(2)}", 0) for h in hours]
     fig, ax = plt.subplots()
     ax.plot(hours, values, marker='o')
-    ax.set_title("시간대별 유동인구")
-    ax.set_xlabel("시간")
-    ax.set_ylabel("인구 수")
+    ax.set_title("시간대별 유동인구", fontproperties=font_prop)
+    ax.set_xlabel("시간", fontproperties=font_prop)
+    ax.set_ylabel("인구 수", fontproperties=font_prop)
     ax.grid(True)
     st.pyplot(fig)
 
@@ -184,9 +184,9 @@ def plot_real_estate_trend(data):
     df = df.sort_values('날짜')
     fig, ax = plt.subplots()
     ax.plot(df['날짜'], df['가격'], marker='o')
-    ax.set_title('부동산 거래 가격 추세')
-    ax.set_xlabel('날짜')
-    ax.set_ylabel('가격(만원)')
+    ax.set_title('부동산 거래 가격 추세', fontproperties=font_prop)
+    ax.set_xlabel('날짜', fontproperties=font_prop)
+    ax.set_ylabel('가격(만원), fontproperties=font_prop')
     st.pyplot(fig)
 
 
