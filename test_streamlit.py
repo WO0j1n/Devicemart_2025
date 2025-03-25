@@ -10,11 +10,19 @@ import pandas as pd
 import folium
 from streamlit_folium import st_folium
 import urllib.parse
-import streamlit as st
+# import streamlit as st
+#
+# # ✅ CSS 외부 파일 로딩
+# with open("style.css") as f:
+#     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# ✅ CSS 외부 파일 로딩
-with open("style.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+import matplotlib.font_manager as fm
+import matplotlib
+
+# 폰트 경로 설정
+font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
+font_prop = fm.FontProperties(fname=font_path)
+matplotlib.rcParams['font.family'] = font_prop.get_name()
 
 # matplotlib.rcParams['font.family'] = 'NanumGothic'  # 추천
 
