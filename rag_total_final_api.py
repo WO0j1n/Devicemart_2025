@@ -13,9 +13,9 @@ from datetime import datetime
 import pandas as pd
 
 from weaviate.auth import AuthApiKey
-from langchain.vectorstores import Weaviate as LangchainWeaviate
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.chat_models import ChatOpenAI
+from langchain_community.vectorstores import Weaviate as LangchainWeaviate
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 
@@ -253,25 +253,46 @@ def get_real_estate_by_dong(gu, dong):
 
 def get_passenger_info_by_dong(gu, dong):
     target_id = None
+    # address_data 내에서 gu와 dong 비교 시 양쪽 문자열의 공백 제거 및 gu는 소문자로 비교
     for entry in address_data["DATA"]:
-        if entry["cgg_nm"] == gu and entry["dong_nm"] == dong and len(entry.get("dong_id", "")) == 8:
-            target_id = entry["dong_id"]
-            break
+        entry_gu = entry.get("cgg_nm", "").strip().lower()
+        entry_dong = entry.get("dong_nm", "").strip()
+        candidate_id = entry.get("dong_id", "").strip()
+        if entry_gu == gu.strip().lower() and entry_dong == dong.strip():
+            if len(candidate_id) == 8:
+                target_id = candidate_id
+                print(f"[DEBUG] Found dong_id: {target_id} for gu='{gu}', dong='{dong}'")
+                break
 
     if not target_id:
+        print(f"[DEBUG] No matching dong_id found for gu='{gu}', dong='{dong}'")
         return None
 
     try:
         res = requests.get(POPULATION_API, timeout=10)
+        print("DEBUG: Population API status code:", res.status_code)
         if res.status_code == 200:
             data = res.json()
-            rows = data.get("tpssPassengerCnt", {}).get("row", [])
+            print("DEBUG: Population API response:", data)
+            population_data = data.get("tpssPassengerCnt")
+            if not population_data:
+                print("[DEBUG] 'tpssPassengerCnt' key not found in API response")
+                return None
+            rows = population_data.get("row", [])
+            print(f"[DEBUG] Found {len(rows)} rows in population data")
             for row in rows:
-                if row.get("DONG_ID") == target_id:
+                current_dong_id = row.get("DONG_ID", "").strip()
+                print(f"[DEBUG] Row dong_id: {current_dong_id}")
+                if current_dong_id == target_id:
+                    print("[DEBUG] Matching row found:", row)
                     return row
+            print("[DEBUG] No matching row found for dong_id:", target_id)
+        else:
+            print(f"[DEBUG] Population API returned status code: {res.status_code}")
     except Exception as e:
-        print("[ERROR] 유동인구 API 오류:", e)
+        print("[ERROR] Population API error:", e)
     return None
+
 
 def evaluate_suitability(pop, estate_data, similar_count):
     score = 0
@@ -316,8 +337,6 @@ def analyze_market(gu, dong, item, get_similar_business_info_rag, get_rag_busine
         "recommendation": recommendation,
         "location_analysis": location_analysis
     }
-
-# ===== Flask API 엔드포인트 =====
 
 @app.route('/ask_rag', methods=['POST'])
 def ask_rag_endpoint():
