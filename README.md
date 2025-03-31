@@ -1,4 +1,5 @@
 # 📘 창업 분석 Flask API 명세서 + React 연동 가이드
+## ❗️최종본: rag total final.py + rag_total_final_api.py❗️
 
 ## ✅ 공통 사항
 - **Base URL**: `http://localhost:8080`
