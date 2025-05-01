@@ -1,6 +1,11 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # ← 추가
+
 from dotenv import load_dotenv
 load_dotenv()
+
+app = Flask(__name__)
+CORS(app)  # ← CORS 허용 설정
 
 import os
 import re
@@ -92,7 +97,7 @@ def postprocess_response(text):
 # 5. RAG 수행 함수 (fallback 보장)
 def ask_rag(question, retriever=None, fallback_context="", force_gpt=False):
     if force_gpt:
-        llm = ChatOpenAI(model_name="gpt-4", temperature=0.7)
+        llm = ChatOpenAI(model_name="gpt-4.1", temperature=0.7)
         response = llm.predict(question)
         return f"\U0001F4A1 GPT 단독 응답\n\n{response}"
 
@@ -116,12 +121,12 @@ def ask_rag(question, retriever=None, fallback_context="", force_gpt=False):
         context = ""
 
     if not context.strip():
-        llm = ChatOpenAI(model_name="gpt-4", temperature=0.7)
+        llm = ChatOpenAI(model_name="gpt-4.1", temperature=0.7)
         response = llm.predict(preprocessed)
         return f"\U0001F4A1 GPT 단독 추론 응답 (문서/컨텍스트 없음)\n\n{response}"
 
     qa_chain = RetrievalQA.from_chain_type(
-        llm=ChatOpenAI(model_name="gpt-4", temperature=0.7),
+        llm=ChatOpenAI(model_name="gpt-4.1", temperature=0.7),
         chain_type="stuff",
         retriever=retriever,
         return_source_documents=True,
@@ -393,6 +398,10 @@ def analyze_market_endpoint():
 @app.route('/ping', methods=['GET'])
 def ping():
     return jsonify({"message": "pong"})
+
+@app.route('/', methods=['GET'])  # ← 이 부분 추가!
+def index():
+    return jsonify({"message": "Flask RAG API 서버 정상 작동 중입니다."})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
